@@ -30,11 +30,14 @@ def parse_log_line(line):
 def count_logs(logs):
     return Counter(log["level"] for log in logs)
 
-def display_log_counts(counts):
+def display_log_counts(counts, level_Fore):
     print(f"{'Рівень логування':<18} | {'Кількість'}")
     print("-" * 30)
     for level, count in counts.items():
-        print(f"{Fore.GREEN}{level:<18} | {Fore.RESET}{count}")
+        if level_Fore.upper() == level:
+            print(f"{Fore.GREEN}{level:<18} | {Fore.GREEN}{count}")
+        else:
+            print(f"{Fore.WHITE}{level:<18} | {Fore.WHITE}{count}")    
 
 def filter_logs_by_level(logs, level):
 
@@ -42,6 +45,7 @@ def filter_logs_by_level(logs, level):
     return list(filter(lambda log: log["level"] == level, logs))
 
 def main():
+    
     if len(sys.argv) < 2:
         print("Використання: python main.py <шлях до лог файлу> [рівень логування]")
         sys.exit(1)
@@ -51,7 +55,7 @@ def main():
 
     logs = load_logs(file_path)
     counts_level = count_logs(logs)
-    display_log_counts(counts_level)
+    display_log_counts(counts_level, level)
 
     if level:
         filtered_logs = filter_logs_by_level(logs, level)
@@ -62,10 +66,7 @@ def main():
         else:
             print(f"\nНемає записів рівня '{level.upper()}'.")
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
 
-logs = load_logs("log.txt")
-counts_level = count_logs(logs)
-display_log_counts(counts_level)
 
